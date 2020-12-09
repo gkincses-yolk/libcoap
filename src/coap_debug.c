@@ -179,16 +179,6 @@ coap_print_addr(const struct coap_address_t *addr, unsigned char *buf, size_t le
     addrptr = &addr->addr.sin.sin_addr;
     port = ntohs(addr->addr.sin.sin_port);
     break;
-  case AF_INET6:
-    if (len < 7) /* do not proceed if buffer is even too short for [::]:0 */
-      return 0;
-
-    *p++ = '[';
-
-    addrptr = &addr->addr.sin6.sin6_addr;
-    port = ntohs(addr->addr.sin6.sin6_port);
-
-    break;
   default:
     memcpy(buf, "(unknown address type)", min(22, len));
     return min(22, len);

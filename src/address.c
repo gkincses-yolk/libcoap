@@ -46,10 +46,6 @@ coap_address_equals(const coap_address_t *a, const coap_address_t *b) {
      a->addr.sin.sin_port == b->addr.sin.sin_port &&
      memcmp(&a->addr.sin.sin_addr, &b->addr.sin.sin_addr,
             sizeof(struct in_addr)) == 0;
- case AF_INET6:
-   return a->addr.sin6.sin6_port == b->addr.sin6.sin6_port &&
-     memcmp(&a->addr.sin6.sin6_addr, &b->addr.sin6.sin6_addr,
-            sizeof(struct in6_addr)) == 0;
  default: /* fall through and signal error */
    ;
  }
@@ -63,8 +59,6 @@ int coap_is_mcast(const coap_address_t *a) {
  switch (a->addr.sa.sa_family) {
  case AF_INET:
    return IN_MULTICAST(ntohl(a->addr.sin.sin_addr.s_addr));
- case  AF_INET6:
-   return IN6_IS_ADDR_MULTICAST(&a->addr.sin6.sin6_addr);
  default:  /* fall through and signal error */
    ;
   }

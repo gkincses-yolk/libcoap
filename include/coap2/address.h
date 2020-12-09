@@ -64,7 +64,6 @@ typedef struct coap_address_t {
   union {
     struct sockaddr         sa;
     struct sockaddr_in      sin;
-    struct sockaddr_in6     sin6;
   } addr;
 } coap_address_t;
 
@@ -81,10 +80,6 @@ _coap_address_isany_impl(const coap_address_t *a) {
   switch (a->addr.sa.sa_family) {
   case AF_INET:
     return a->addr.sin.sin_addr.s_addr == INADDR_ANY;
-  case AF_INET6:
-    return memcmp(&in6addr_any,
-                  &a->addr.sin6.sin6_addr,
-                  sizeof(in6addr_any)) == 0;
   default:
     ;
   }
@@ -119,12 +114,7 @@ coap_address_copy( coap_address_t *dst, const coap_address_t *src ) {
 #else
   memset( dst, 0, sizeof( coap_address_t ) );
   dst->size = src->size;
-  if ( src->addr.sa.sa_family == AF_INET6 ) {
-    dst->addr.sin6.sin6_family = src->addr.sin6.sin6_family;
-    dst->addr.sin6.sin6_addr = src->addr.sin6.sin6_addr;
-    dst->addr.sin6.sin6_port = src->addr.sin6.sin6_port;
-    dst->addr.sin6.sin6_scope_id = src->addr.sin6.sin6_scope_id;
-  } else if ( src->addr.sa.sa_family == AF_INET ) {
+  if ( src->addr.sa.sa_family == AF_INET ) {
     dst->addr.sin = src->addr.sin;
   } else {
     memcpy( &dst->addr, &src->addr, src->size );
